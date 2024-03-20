@@ -272,7 +272,7 @@ class OrganizationAddLocationView(CreateView):
     model = OrganizationLocation
     template_name = 'org_createlocation.html'
     form_class = OrganizationLocationForm
-    success_url = reverse_lazy('organization_locationgamelist')
+    success_url = reverse_lazy('organization_locationworkingdays')
 
     def form_valid(self, form):
         days = {
