@@ -12,6 +12,7 @@ import {
   listclubWorking,
   listClubImages,
 } from "../actions/actions";
+
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
 function ClubDetailScreen() {
@@ -126,7 +127,8 @@ function ClubDetailScreen() {
             {isPopupVisible && (
               <div className="popup-overlay" onClick={handleOverlayClick}>
                 <div className="popup-content">
-                  <IoMdCloseCircleOutline onClick={handlePopupToggle} style={{ float: 'right' }} />
+                  <IoMdCloseCircleOutline onClick={handlePopupToggle} style={{ float: "right", }} />
+                  {/* <FontAwesomeIcon icon={faWindowClose} /> */}
                   <h4>Working Timings</h4>
                   <table className="table">
                     <thead>

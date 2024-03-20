@@ -46,33 +46,12 @@ function ClubListScreen() {
   useEffect(() => {
     dispatch(listGames());
     dispatch(listAreas());
-    const dtToday = new Date();
-    const month = dtToday.getMonth() + 1;
-    const day = dtToday.getDate();
-    const year = dtToday.getFullYear();
-    const maxDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-    
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-      dateInput.setAttribute('min', maxDate);
-    }
   }, [dispatch]);
-
-  useEffect(() => {
-    const storedSelectedGame = localStorage.getItem("selectedGame");
-    const storedSelectedArea = localStorage.getItem("selectedArea");
-    const storedSelectedDate = localStorage.getItem("selectedDate");
-
-    if (storedSelectedGame) setGameName(storedSelectedGame);
-    if (storedSelectedArea) setAreaName(storedSelectedArea);
-    if (storedSelectedDate) setDate(storedSelectedDate);
-  }, []);
   
   useEffect(() => {
     setSelectedArea(areaName)
     setSelectedGame(gameName)
     setSelectedDate(date)
-    dispatch(filterLocation(areaName, gameName, date));
   }, [areaName,gameName,date]);
 
   return (
@@ -109,13 +88,13 @@ function ClubListScreen() {
 
             <DateInput id="date" value={date} onChange={handleDateChange} />
           </div>
-          {/* <div className="availability-btn-class">
+          <div className="availability-btn-class">
             <Button
               onClick={handleSubmit}
               className="btn-check-availability-club"
               text="Check Availability"
             />
-          </div> */}
+          </div>
         </form>
       </div>
       <div className="club-list">

@@ -12,20 +12,20 @@ function CheckoutScreen() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
+ 
   const handleSubmit = (event) => {
     event.preventDefault();
     navigate("/checkout");
   };
 
   const location = useLocation();
-  const clubLocation = location.state.clubLocation;
-  const gameName = location.state.gameName;
-  const duration = location.state.duration;
-  const clubPrice = location.state.clubPrice;
-  const taxPrice = location.state.taxPrice;
-  const bookingFee = location.state.bookingFee;
-  const totalPrice = location.state.totalPrice;
+  const clubLocation = location.state?.clubLocation;
+  const gameName = location.state?.gameName;
+  const duration = location.state?.duration;
+  const clubPrice = location.state?.clubPrice;
+  const taxPrice = location.state?.taxPrice;
+  const bookingFee = location.state?.bookingFee;
+  const totalPrice = location.state?.totalPrice;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;

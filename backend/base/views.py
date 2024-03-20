@@ -808,7 +808,6 @@ from django.views.generic import CreateView
 
 
 class CreateMultipleSlotsView(View):
-
     def get(self, request, *args, **kwargs):
         pk = request.session.get('location_pk')
         courts = Court.objects.filter(location_id=pk)
@@ -818,45 +817,41 @@ class CreateMultipleSlotsView(View):
             'form': form,  # Pass the form to the template context
         }
         return render(request, 'ml.html', context)
-
+        
     def post(self, request, *args, **kwargs):
-        # Get the courts for the location
-        location_pk = request.session.get('location_pk')
-        courts = Court.objects.filter(location_id=location_pk)
+        # Get the court_pk from URL parameters
+        court_pk = kwargs.get('court_pk')
+        
+        # Retrieve the court object corresponding to court_pk
+        court = get_object_or_404(Court, pk=court_pk, location_id=request.session.get('location_pk'))
 
-        for court in courts:
-            active_days = OrganizationLocationWorkingDays.objects.filter(
-                organization_location=location_pk, is_active=True)
+        # Get all active days for the organization location
+        active_days = OrganizationLocationWorkingDays.objects.filter(organization_location=request.session.get('location_pk'), is_active=True)
 
-            for day in active_days:
-                # Get start and end time for the day
-                work_from_time = day.work_from_time
-                work_to_time = day.work_to_time
-                # Set current time to the starting work time
-                current_datetime = datetime.combine(datetime.now().date(),
-                                                    work_from_time)
-                print(current_datetime)
-                acc_day = day.days
+        # Iterate over active days
+        for day in active_days:
+            # Get start and end time for the day
+            work_from_time = day.work_from_time
+            work_to_time = day.work_to_time
 
-                # Create slots for each hour within the time range
-                while current_datetime < datetime.combine(
-                        datetime.now().date(), work_to_time):
-                    # Create a new slot for the current hour and court
-                    slot = Slot.objects.create(
-                        start_time=current_datetime.time(),
-                        end_time=(current_datetime +
-                                  timedelta(hours=1)).time(),
-                        court=court,
-                        location=OrganizationLocation.objects.get(
-                            pk=location_pk
-                        ),  # Assuming you are passing location data via POST
-                        days=acc_day,
-                        is_booked=
-                        False  # Assuming slots are initially not booked
-                    )
+            # Set current time to the starting work time
+            current_datetime = datetime.combine(datetime.now().date(), work_from_time)
 
-                    # Move to the next hour
-                    current_datetime += timedelta(hours=1)
+            # Create slots for each hour within the time range
+            while current_datetime < datetime.combine(datetime.now().date(), work_to_time):
+                # Create a new slot for the current hour and court
+                Slot.objects.create(
+                    start_time=current_datetime.time(),
+                    end_time=(current_datetime + timedelta(hours=1)).time(),
+                    court=court,
+                    location=OrganizationLocation.objects.get(pk=request.session.get('location_pk')),  # Assuming you are passing location data via POST
+                    days=day.days, 
+                    is_booked=False  # Assuming slots are initially not booked
+                )
+                
+                # Move to the next hour
+                current_datetime += timedelta(hours=1)
 
         # Redirect or render as needed
         return redirect('court-list')
+

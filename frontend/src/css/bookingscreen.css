@@ -41,7 +41,7 @@
     font-weight: 600;
     margin-top: 10px;
     text-align: left;
-    /* width: 180px; */
+    width: 180px;
     display: flex;
     align-items: center;
     flex-wrap: wrap;

@@ -17,7 +17,6 @@ import {
 import { useHomeContext } from '../context/HomeContext'
 
 
-
 function HomeScreen() {
   const dispatch = useDispatch();
   const sectionRef = useRef(null);
@@ -30,14 +29,14 @@ function HomeScreen() {
   };
 
   const areaList = useSelector((state) => state.areaList);
-  const { arealoading, areaserror, areas } = areaList;
+  const { areaerror, arealoading, areas } = areaList;
 
   const gameList = useSelector((state) => state.gameList);
   const { gameerror, gameloading, games } = gameList;
 
-  // const handleDateChange = (selectedDate) => {
-  //   setDate(selectedDate);
-  // };
+  const handleDateChange = (selectedDate) => {
+    setDate(selectedDate);
+  };
   
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -47,7 +46,7 @@ function HomeScreen() {
  
   const [gameName, setGameName] = useState(games[0]?.game_name);
   const [areaName, setAreaName] = useState(areas[0]?.area_name);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState();
 
   useEffect(() => {
     dispatch(listGames());
@@ -69,16 +68,6 @@ function HomeScreen() {
     setSelectedGame(gameName)
     setSelectedDate(date)
   }, [areaName, gameName, date]);
-
-  useEffect(() => {
-    const storedSelectedGame = localStorage.getItem("selectedGame");
-    const storedSelectedArea = localStorage.getItem("selectedArea");
-    const storedSelectedDate = localStorage.getItem("selectedDate");
-
-    if (storedSelectedGame) setGameName(storedSelectedGame);
-    if (storedSelectedArea) setAreaName(storedSelectedArea);
-    if (storedSelectedDate) setDate(storedSelectedDate);
-  }, []);
 
   return (
     <div className="home">
@@ -133,8 +122,8 @@ function HomeScreen() {
             
             {arealoading ? (
               <Loader />
-            ) : areaserror ? (
-              <Message variant="danger">Areas: {areaserror}</Message>
+            ) : areaerror ? (
+              <Message variant="danger">{areaerror}</Message>
             ) : (
             <SelectInput
               label="area"
@@ -144,7 +133,7 @@ function HomeScreen() {
               options={areas}
             />)}
 
-            <DateInput id="date" value={date} onChange={(selectedDate) => setDate(selectedDate)} />
+            <DateInput id="date" value={date} onChange={handleDateChange} />
 
           </div>
           <div className="availability-btn-class">

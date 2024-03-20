@@ -100,7 +100,18 @@ function BookingScreen() {
     };
 
     dispatch(createBooking(bookingData));
-    navigate("/checkout");
+    navigate("/checkout", { state: { clubLocation,
+      areaName,
+      gameName,
+      date,
+      duration,
+      totalPrice,
+      bookingFee,
+      taxPrice,
+      clubPrice,
+      courts,
+      userInfo,
+      slot, } });
   };
 
   const { clubLocation } = useSelector((state) => state.Location);
@@ -135,38 +146,19 @@ function BookingScreen() {
     Number(taxPrice) +
     Number(bookingFee)
   ).toFixed(0);
-  
 
-  useEffect(() => {
-    const storedSelectedGame = localStorage.getItem("selectedGame");
-    const storedSelectedArea = localStorage.getItem("selectedArea");
-    const storedSelectedDate = localStorage.getItem("selectedDate");
-
-    if (storedSelectedGame) setGameName(storedSelectedGame);
-    if (storedSelectedArea) setAreaName(storedSelectedArea);
-    if (storedSelectedDate) setDate(storedSelectedDate);
-  }, []);
-  
   useEffect(() => {
     console.log("Available slots:", workingHours);
     const fetchData = async () => {
       dispatch(listclubLocation(id));
       dispatch(listclubGame(id));
       dispatch(listclubWorking(id));
+      alert(gameName)
       dispatch(listCourts(id, gameName));
     };
-    const dtToday = new Date();
-    const month = dtToday.getMonth() + 1;
-    const day = dtToday.getDate();
-    const year = dtToday.getFullYear();
-    const maxDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-    
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-      dateInput.setAttribute('min', maxDate);
-    }
+
     fetchData();
-  }, [dispatch, id,gameName]);
+  }, [dispatch, gameName, id, workingHours]);
 
   return (
     <div>
@@ -235,7 +227,6 @@ function BookingScreen() {
               <Duration
                 id="hours"
                 label="Duration"
-                disabled={'disabled'}
                 preventDefault
                 onNumChange={handleDurationChange}
               />
